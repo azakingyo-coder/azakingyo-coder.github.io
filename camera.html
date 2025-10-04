@@ -165,7 +165,7 @@
       <div class="stream-wrap">
         <div class="stream" id="streamBox">
           <img id="mjpeg"
-               src="https://stevens-had-casio-perception.trycloudflare.com/?action=stream"
+               src="https://abilities-comp-hebrew-lasting.trycloudflare.com/?action=stream"
                alt="Live stream" />
         </div>
         <div class="controls">
@@ -254,27 +254,6 @@
     const db = firebase.database();
     const auth = firebase.auth();
     const tempDisplay = document.getElementById('tempDisplay');
-
-    // 🔒 強化認証チェック
-    auth.onAuthStateChanged(user => {
-      if (!user) {
-        // 未ログインなら login.html に安全リダイレクト
-        window.location.replace("/login.html");
-      } else {
-        // 特定ユーザーのみアクセス許可（UIDを追加）
-        const allowedUIDs = [
-          "DDzxEFgzfSdxN9UW0VbOsGVyAza2",
-        ];
-        if (!allowedUIDs.includes(user.uid)) {
-          alert("このアカウントではアクセスできません。ログインし直してください。");
-          auth.signOut().then(() => {
-            window.location.replace("https://www.azarasimidi.f5.si/login.html");
-          });
-        } else {
-          console.log("✅ ログイン済み:", user.email);
-        }
-      }
-    });
 
     // 温度表示更新
     function updateTemp(temp) {
