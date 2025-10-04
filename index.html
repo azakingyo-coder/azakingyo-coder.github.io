@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Azapon Portal</title>
+  <link rel="icon" href="images/azarasi.png" type="image/png">
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #ffe6ff, #aee1f9, #001f3f);
+      color: #fff;
+      text-align: center;
+      padding: 40px;
+      overflow-x: hidden;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px #ff7bf2, 0 0 20px #7bdfff;
+    }
+    p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      color: #fdfdfd;
+      text-shadow: 0 0 8px rgba(255,255,255,0.7);
+    }
+    .card-container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 25px;
+      box-shadow: 0 0 15px rgba(255,255,255,0.4), 0 0 30px rgba(0,200,255,0.3);
+      padding: 25px;
+      width: 260px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #ff8af2, 0 0 40px #4daaf5;
+    }
+    .card img {
+      width: 90px;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 0 8px rgba(255,255,255,0.7));
+    }
+    .card h2 {
+      margin: 10px 0;
+      font-size: 1.5em;
+      color: #fff;
+      text-shadow: 0 0 6px #ffbdf9, 0 0 12px #7bdfff;
+    }
+    .card p {
+      font-size: 1em;
+      color: #fdfdfd;
+      margin-bottom: 15px;
+    }
+    a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 18px;
+      background: linear-gradient(135deg, #ff7bf2, #4daaf5);
+      color: white;
+      border-radius: 15px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 10px #ff7bf2, 0 0 20px #4daaf5;
+      transition: all 0.3s;
+    }
+    a:hover {
+      background: linear-gradient(135deg, #ffbdf9, #7bdfff);
+      box-shadow: 0 0 20px #ffbdf9, 0 0 40px #7bdfff;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌟 Azaponのポータルへようこそ 🌟</h1>
+  <p>好きなページを選んでね 💜🐟</p>
+
+  <div class="card-container">
+    <div class="card">
+      <img src="images/fish.png" alt="水槽">
+      <h2>水槽モニター</h2>
+      <p>プラティたちの水温をかわいく表示 🌊</p>
+      <a href="https://www.azarasimidi.f5.si/aquarium.html">▶ aquarium.html</a>
+    </div>
+
+    <div class="card">
+      <img src="images/camera.png" alt="カメラ">
+      <h2>カメラ＋温度</h2>
+      <p>ライブ映像＋温度を同時にチェック 🎥🌡</p>
+      <a href="camera.html">▶ camera.html</a>
+    </div>
+  </div>
+</body>
+</html>
