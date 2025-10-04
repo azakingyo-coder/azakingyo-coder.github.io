@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+  <title>404 Not Found</title>
+</head>
+<body bgcolor="#00ffff" text="#ff0000" link="#0000ff" vlink="#800080" alink="#ff00ff"
+      background="tile_background.gif">
+
+<center>
+  <!-- 大きな赤文字で点滅 -->
+  <h1><font size="7" color="#ff0000"><blink>404</blink></font></h1>
+
+  <!-- サブメッセージ -->
+  <h2>おっと！ページが見つかりません</h2>
+  <p>
+    URLが間違っているか、ページが削除された可能性があります。
+  </p>
+
+  <!-- スクロールメッセージ -->
+  <marquee behavior="scroll" direction="left" scrollamount="5" bgcolor="#ffff00">
+    ⚠️ 1990年代風ウェブサイト 404 ⚠️
+  </marquee>
+
+  <!-- ホームリンク -->
+  <p><a href="/">ホームに戻る</a></p>
+
+  <!-- Rays Counter ここから -->
+  <!--タグはここから-->
+  <table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td align="center">
+        <a href="http://www.rays-counter.com/">
+          <img src="http://www.rays-counter.com/d1302_f8_017/68e0aedc86e03/" alt="アクセスカウンター" border="0">
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="http://www.rays-counter.com/images/counter_01.gif" border="0">
+        <img src="http://www.rays-counter.com/images/counter_02.gif" border="0">
+        <img src="http://www.rays-counter.com/images/counter_03.gif" border="0" alt="">
+        <img src="http://www.rays-counter.com/images/counter_04.gif" border="0">
+        <img src="http://www.rays-counter.com/images/counter_05.gif" border="0">
+      </td>
+    </tr>
+  </table>
+  <!--ここまで-->
+
+  <!-- GIFアイコンで飾り -->
+  <p>
+    <img src="smiley.gif" alt="smiley">
+    <img src="icon_warning.gif" alt="warning">
+  </p>
+
+  <!-- 当時っぽい小ネタ -->
+  <p><font color="#008000">★ このページは Windows 98 でも開けます ★</font></p>
+
+</center>
+</body>
+</html>
