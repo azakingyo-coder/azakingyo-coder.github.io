@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Azapon Aquarium Login</title>
+<style>
+  body {
+    background-color: #008080; /* Windows98風緑 */
+    font-family: "MS Sans Serif", sans-serif;
+  }
+  .window {
+    width: 300px;
+    margin: 100px auto;
+    background-color: #c0c0c0;
+    border: 2px solid #000080;
+    padding: 10px;
+    box-shadow: 2px 2px #808080;
+  }
+  .title-bar {
+    background: #000080;
+    color: white;
+    padding: 2px 5px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  input {
+    width: 100%;
+    margin: 5px 0;
+    padding: 3px;
+    border: 2px inset #fff;
+    font-family: "MS Sans Serif", sans-serif;
+  }
+  button {
+    width: 100%;
+    margin: 5px 0;
+    padding: 3px;
+    background-color: #c0c0c0;
+    border: 2px outset #fff;
+    font-family: "MS Sans Serif", sans-serif;
+    cursor: pointer;
+  }
+  #message {
+    color: red;
+    font-size: 12px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="window">
+  <div class="title-bar">Azapon Aquarium Login</div>
+  <form id="login-form">
+    <input type="email" id="email" placeholder="メールアドレス" required>
+    <input type="password" id="password" placeholder="パスワード" required>
+    <button type="submit">ログイン</button>
+    <button type="button" id="signup">新規作成</button>
+  </form>
+  <div id="message"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDxRGQRujfsqVfZpM49sFYFSRG8_HOuPBQ",
+    authDomain: "azaponlogin.firebaseapp.com",
+    projectId: "azaponlogin",
+    storageBucket: "azaponlogin.firebasestorage.app",
+    messagingSenderId: "102238849781",
+    appId: "1:102238849781:web:bac03b3bc8c8f508e953bc"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  const form = document.getElementById("login-form");
+  const message = document.getElementById("message");
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => message.innerText = "ログイン成功！")
+      .catch(err => message.innerText = "エラー：" + err.message);
+  });
+
+  document.getElementById("signup").addEventListener("click", () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(() => message.innerText = "アカウント作成成功！ログインしてください。")
+      .catch(err => message.innerText = "エラー：" + err.message);
+  });
+</script>
+
+</body>
+</html>
