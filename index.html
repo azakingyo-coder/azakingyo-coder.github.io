@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Azapon Camera — Live Aquarium</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #0f1a2b;
+      --accent: #3ddc97;
+      --muted: #9fb0c8;
+      --text: #e6f0f6;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: linear-gradient(180deg, #06111a 0%, var(--bg) 100%);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto,
+        "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      color: var(--text);
+    }
+    .wrap {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 28px;
+    }
+    header {
+      width: 100%;
+      max-width: 1100px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0ee6a9, #18a3ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #042;
+      box-shadow: 0 6px 18px rgba(3, 15, 30, .6);
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .card {
+      width: 100%;
+      max-width: 1100px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 8px 30px rgba(2, 8, 20, 0.6);
+      border: 1px solid rgba(255,255,255,0.03);
+      margin-bottom: 20px;
+    }
+    .stream-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    .stream {
+      width: 100%;
+      height: 0;
+      padding-bottom: 56%;
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000;
+    }
+    .stream img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 6px;
+    }
+    button {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.03);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.primary {
+      background: linear-gradient(90deg, var(--accent), #2ec1ff);
+      color: #022;
+      box-shadow: 0 6px 18px rgba(16,168,127,0.12);
+    }
+    .note {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 10px;
+    }
+    footer {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    @media(min-width:900px) {
+      .stream { padding-bottom: 56%; }
+    }
+    @media(max-width:520px) {
+      .title { font-size: 18px; }
+      .logo { width: 48px; height: 48px; }
+    }
+    /* 温度ボックス */
+    .temp-box {
+      font-size: 2em;
+      font-weight: bold;
+      text-align: center;
+      padding: 18px 32px;
+      border-radius: 16px;
+      background: rgba(0,0,0,0.4);
+      transition: color 0.5s, background 0.5s;
+      margin-top: 12px;
+    }
+    .safe { color: #ffff66; }
+    .warning { color: #ff6600; }
+    .status-text {
+      display: block;
+      font-size: 1.1em;
+      margin-top: 4px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">Az</div>
+      <div>
+        <div class="title">Azapon Camera</div>
+        <div class="subtitle">Live Aquarium — 水槽ライブ</div>
+      </div>
+    </header>
+
+    <!-- 映像カード -->
+    <main class="card">
+      <div class="stream-wrap">
+        <div class="stream" id="streamBox">
+          <img id="mjpeg"
+               src="https://stevens-had-casio-perception.trycloudflare.com/?action=stream"
+               alt="Live stream" />
+        </div>
+        <div class="controls">
+          <button id="reload">Reload</button>
+          <button id="pop" class="primary">Open in new tab</button>
+          <button id="fit">Fit / Cover</button>
+        </div>
+        <div class="note">
+          これで水槽のライブ配信を表示します。問題がある場合はリロードしてください。
+          <br>※ このページのURLや配信URLは他人に教えないでね。
+        </div>
+      </div>
+    </main>
+
+    <!-- 温度モニターカード -->
+    <div class="card">
+      <div class="temp-box" id="tempDisplay">
+        温度: -- °C<br><span class="status-text">---</span>
+      </div>
+    </div>
+
+    <footer>Azapon Camera • live stream</footer>
+  </div>
+
+  <!-- Camera スクリプト -->
+  <script>
+    (function(){
+      const img = document.getElementById('mjpeg');
+      const reload = document.getElementById('reload');
+      const pop = document.getElementById('pop');
+      const fit = document.getElementById('fit');
+      let cover = true;
+
+      reload.addEventListener('click', () => {
+        const src = new URL(img.src);
+        src.searchParams.set('_ts', Date.now());
+        img.src = src.toString();
+      });
+
+      pop.addEventListener('click', () => {
+        window.open(img.src, '_blank');
+      });
+
+      fit.addEventListener('click', () => {
+        cover = !cover;
+        img.style.objectFit = cover ? 'cover' : 'contain';
+        fit.textContent = cover ? 'Fit / Cover' : 'Fit / Contain';
+      });
+
+      let retry = 0;
+      img.addEventListener('error', () => {
+        retry++;
+        if (retry <= 5) {
+          setTimeout(() => reload.click(), 800 * retry);
+        } else {
+          const box = document.getElementById('streamBox');
+          box.innerHTML =
+            '<div style="color:#fff;text-align:center;padding:30px">' +
+            'ストリームに接続できません。ネットワークや配信側を確認してください。' +
+            '</div>';
+        }
+      });
+
+      img.style.objectFit = 'cover';
+      img.decoding = 'async';
+      img.loading = 'eager';
+    })();
+  </script>
+
+  <!-- Firebase 温度モニター & 強化認証チェック -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDUA7LwBaBupLcYMu-kzk7Hcv486IDiO8w",
+      authDomain: "azapon-temp-monitor.firebaseapp.com",
+      databaseURL: "https://azapon-temp-monitor-default-rtdb.asia-southeast1.firebasedatabase.app/",
+      projectId: "azapon-temp-monitor",
+      storageBucket: "azapon-temp-monitor.appspot.com",
+      messagingSenderId: "802815899884",
+      appId: "1:802815899884:web:be30065f2c815ad8dc0dc9"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const auth = firebase.auth();
+    const tempDisplay = document.getElementById('tempDisplay');
+
+    // 🔒 強化認証チェック
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        // 未ログインなら login.html に安全リダイレクト
+        window.location.replace("/login.html");
+      } else {
+        // 特定ユーザーのみアクセス許可（UIDを追加）
+        const allowedUIDs = [
+          "DDzxEFgzfSdxN9UW0VbOsGVyAza2",
+        ];
+        if (!allowedUIDs.includes(user.uid)) {
+          alert("このアカウントではアクセスできません。ログインし直してください。");
+          auth.signOut().then(() => {
+            window.location.replace("https://www.azarasimidi.f5.si/login.html");
+          });
+        } else {
+          console.log("✅ ログイン済み:", user.email);
+        }
+      }
+    });
+
+    // 温度表示更新
+    function updateTemp(temp) {
+      let statusText = '';
+      if (temp < 22) {
+        tempDisplay.className = 'temp-box warning';
+        statusText = '低すぎる！危険';
+      } else if (temp > 28) {
+        tempDisplay.className = 'temp-box warning';
+        statusText = '高すぎる！危険';
+      } else {
+        tempDisplay.className = 'temp-box safe';
+        statusText = '安全';
+      }
+      tempDisplay.innerHTML =
+        `温度: ${temp.toFixed(1)} °C<br><span class="status-text">${statusText}</span>`;
+    }
+
+    db.ref('temperature').on('value', snapshot => {
+      const temp = snapshot.val();
+      if (temp !== null) updateTemp(temp);
+    });
+  </script>
+</body>
+</html>
