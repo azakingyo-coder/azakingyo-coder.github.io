@@ -2,92 +2,112 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Azapon Aquarium Login</title>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <style>
+  /* 背景と全体 */
   body {
-    background: linear-gradient(to bottom, #0b3d91, #2b6ebf); /* 水っぽい青グラデ */
-    font-family: "MS Sans Serif", sans-serif;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(180deg, #0b1220 0%, #1e2a3c 100%);
+    color: #e6f0ff;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
   }
-  .window {
+
+  /* ログインボックス */
+  .login-box {
+    background: rgba(15, 26, 43, 0.9);
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 200, 255, 0.4);
     width: 320px;
-    background-color: #c0c0c0;
-    border: 2px solid #000080;
-    padding: 10px;
-    box-shadow: 3px 3px #808080;
+    text-align: center;
     position: relative;
-    overflow: hidden;
-    border-radius: 5px;
   }
-  .title-bar {
-    background: #000080;
-    color: white;
-    padding: 2px 5px;
-    font-weight: bold;
-    font-size: 14px;
+
+  /* タイトル */
+  .login-box h1 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: #3ddc97; /* Azaponグリーン */
   }
-  .label {
-    font-size: 12px;
-    margin-top: 5px;
-  }
-  input {
+
+  /* 入力フォーム */
+  input[type="email"], input[type="password"] {
     width: 100%;
-    margin: 5px 0;
-    padding: 3px;
-    border: 2px inset #fff;
-    font-family: "MS Sans Serif", sans-serif;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
   }
+
+  /* ボタン */
   button {
     width: 100%;
-    margin: 5px 0;
-    padding: 3px;
-    background-color: #c0c0c0;
-    border: 2px outset #fff;
-    font-family: "MS Sans Serif", sans-serif;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 10px;
+    border: none;
+    background-color: #3ddc97;
+    color: #0b1220;
+    font-weight: bold;
     cursor: pointer;
+    transition: 0.3s;
   }
+  button:hover {
+    background-color: #34c487;
+  }
+
+  /* メッセージ */
   #message {
-    color: red;
-    font-size: 12px;
-    text-align: center;
+    margin-top: 10px;
+    color: #ff5555;
+    font-size: 0.9rem;
   }
+
   /* 小魚アニメーション */
   .fish {
     position: absolute;
     width: 20px;
     height: 10px;
-    background: orange;
-    border-radius: 50%;
-    animation: swim 4s infinite linear;
+    background: #3ddc97;
+    border-radius: 50% 50% 50% 50%;
+    animation: swim 6s linear infinite;
+    top: 80%;
+    left: -50px;
   }
+
   @keyframes swim {
-    0% { left: -30px; top: 50px; }
-    50% { left: 150px; top: 30px; }
-    100% { left: 350px; top: 50px; }
+    0% { transform: translateX(0) translateY(0) rotate(0deg); }
+    50% { transform: translateX(350px) translateY(-30px) rotate(20deg); }
+    100% { transform: translateX(700px) translateY(0) rotate(0deg); }
   }
 </style>
 </head>
 <body>
 
-<div class="window">
-  <div class="title-bar">Azapon Aquarium Login</div>
-  <form id="login-form">
-    <div class="label">メールアドレス:</div>
-    <input type="email" id="email" required>
-    <div class="label">パスワード:</div>
-    <input type="password" id="password" required>
-    <button type="submit">OK</button>
+<div class="login-box">
+  <h1>Azapon Aquarium</h1>
+  <form id="loginForm">
+    <input type="email" id="email" placeholder="メールアドレス" required>
+    <input type="password" id="password" placeholder="パスワード" required>
+    <button type="submit">ログイン</button>
+    <div id="message"></div>
   </form>
-  <div id="message"></div>
   <div class="fish"></div>
+  <div class="fish" style="animation-delay:2s; top:70%; width:25px; height:12px;"></div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script>
+  // Firebase 初期化
   const firebaseConfig = {
     apiKey: "AIzaSyDxRGQRujfsqVfZpM49sFYFSRG8_HOuPBQ",
     authDomain: "azaponlogin.firebaseapp.com",
@@ -99,16 +119,23 @@
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
 
-  const form = document.getElementById("login-form");
+  // フォーム送信
+  const form = document.getElementById("loginForm");
   const message = document.getElementById("message");
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
+
     auth.signInWithEmailAndPassword(email, password)
-      .then(() => message.innerText = "ログイン成功！")
-      .catch(err => message.innerText = "エラー：" + err.message);
+      .then(() => {
+        // 成功 → 水槽カメラへリダイレクト
+        window.location.href = "http://camera.azarasimidi.f5.si/";
+      })
+      .catch(err => {
+        message.innerText = "エラー：" + err.message;
+      });
   });
 </script>
 
