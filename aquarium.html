@@ -1,6 +1,32 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDxRGQRujfsqVfZpM49sFYFSRG8_HOuPBQ",
+    authDomain: "azaponlogin.firebaseapp.com",
+    projectId: "azaponlogin",
+    storageBucket: "azaponlogin.firebasestorage.app",
+    messagingSenderId: "102238849781",
+    appId: "1:102238849781:web:bac03b3bc8c8f508e953bc"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // 永続ログイン
+  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(() => {
+      // 認証状態確認
+      auth.onAuthStateChanged(user => {
+        if (!user) {
+          // 未ログインなら login.html に飛ばす
+          window.location.href = "/login.html";
+        }
+      });
+    });
+</script>
   <script>
   fetch("/maintenance.json")
     .then(res => res.json())
