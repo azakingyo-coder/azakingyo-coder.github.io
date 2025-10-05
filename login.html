@@ -4,73 +4,64 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Azapon Aquarium Login</title>
+
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
 <style>
-  /* 背景と全体 */
+  /* 全体スタイル */
   body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(180deg, #0b1220 0%, #1e2a3c 100%);
-    color: #e6f0ff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     height: 100vh;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom, #1a2a6c, #b21f1f, #fdbb2d);
+    overflow: hidden;
   }
 
   /* ログインボックス */
   .login-box {
-    background: rgba(15, 26, 43, 0.9);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.9);
     padding: 30px 40px;
     border-radius: 15px;
-    box-shadow: 0 0 20px rgba(0, 200, 255, 0.4);
-    width: 320px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
     text-align: center;
-    position: relative;
+    z-index: 2;
+    width: 300px;
   }
 
-  /* タイトル */
   .login-box h1 {
     margin-bottom: 20px;
-    font-size: 1.8rem;
-    color: #3ddc97; /* Azaponグリーン */
+    color: #0b1220;
   }
 
-  /* 入力フォーム */
-  input[type="email"], input[type="password"] {
+  .login-box input {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
   }
 
-  /* ボタン */
-  button {
+  .login-box button {
     width: 100%;
     padding: 10px;
-    margin-top: 15px;
-    border-radius: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
     border: none;
-    background-color: #3ddc97;
-    color: #0b1220;
+    background-color: #0b1220;
+    color: #fff;
     font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
-  }
-  button:hover {
-    background-color: #34c487;
   }
 
-  /* メッセージ */
   #message {
     margin-top: 10px;
-    color: #ff5555;
-    font-size: 0.9rem;
+    color: red;
   }
 
   /* 小魚アニメーション */
@@ -78,11 +69,10 @@
     position: absolute;
     width: 20px;
     height: 10px;
-    background: #3ddc97;
-    border-radius: 50% 50% 50% 50%;
     animation: swim 6s linear infinite;
     top: 80%;
     left: -50px;
+    z-index: 1;
   }
 
   @keyframes swim {
@@ -102,9 +92,13 @@
     <button type="submit">ログイン</button>
     <div id="message"></div>
   </form>
-  <div class="fish"></div>
-  <div class="fish" style="animation-delay:2s; top:70%; width:25px; height:12px;"></div>
 </div>
+
+<!-- 小魚を複数追加 -->
+<img src="images/platy.png" class="fish" style="animation-delay:0s; top:70%; width:25px; height:12px;">
+<img src="images/platy.png" class="fish" style="animation-delay:2s; top:75%; width:20px; height:10px;">
+<img src="images/platy.png" class="fish" style="animation-delay:4s; top:80%; width:22px; height:11px;">
+<img src="images/platy.png" class="fish" style="animation-delay:1s; top:85%; width:18px; height:9px;">
 
 <script>
   // Firebase 初期化
@@ -119,22 +113,21 @@
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
 
-  // フォーム送信
-  const form = document.getElementById("loginForm");
-  const message = document.getElementById("message");
-
-  form.addEventListener("submit", (e) => {
+  // ログイン処理
+  document.getElementById('loginForm').addEventListener('submit', function(e){
     e.preventDefault();
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const messageDiv = document.getElementById('message');
 
     auth.signInWithEmailAndPassword(email, password)
-      .then(() => {
-        // 成功 → 水槽カメラへリダイレクト
+      .then((userCredential) => {
+        // ログイン成功
         window.location.href = "http://camera.azarasimidi.f5.si/";
       })
-      .catch(err => {
-        message.innerText = "エラー：" + err.message;
+      .catch((error) => {
+        // エラー表示
+        messageDiv.textContent = error.message;
       });
   });
 </script>
